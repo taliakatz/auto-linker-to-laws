@@ -1,18 +1,6 @@
 (function (ns) {
 
     const uriMap = [
-        // {
-        //     "OfficialName": "ראש העיר באר שבע, רוביק דנילוביץ",
-        //     "KnessetUrl": "https://main.knesset.gov.il/Activity/Legislation/Laws/Pages/LawBill.aspx?t=LawReshumot&lawitemid=16126"
-        // },
-        // {
-        //     "OfficialName": "פנה אמש (שני, 22/2) לראש הממשלה, בנימין",
-        //     "KnessetUrl": "https://main.knesset.gov.il/Activity/Legislation/Laws/Pages/LawBill.aspx?t=LawReshumot&lawitemid=20"
-        // },
-        // {
-        //     "OfficialName": "חוקי מדינת ישראל, ככככ",
-        //     "KnessetUrl": "https://main.knesset.gov.il/Activity/Legislation/Laws/Pages/LawBill.aspx?t=LawReshumot&lawitemid=5"
-        // },
         {
             "Id": "5",
             "Type": "Primary",
@@ -5792,95 +5780,76 @@
     ns.matches = [];
     ns.sources = {};
 
-    testYuval();
+    var regexAndLinks = [];
 
-    function testYuval() {
-        console.log('test yuval function started..!!');
-        var arr = [];
-        uriMap.forEach(function (item) {
-            
-            let sp = item.OfficialName.split(/(?: )+/);
-
-            if (sp && sp[0] !== '') {    
-                let newKey = `[\u05d4\u05d1\u05dc\u05de]*${sp[0]}`;
-                for (let i = 1; i < sp.length; i++) {
-                    let word = sp[i]; 
-                    if (sp[i-1].charAt(sp[i-1].length-1) == ',' || (word !== `` && (word.charAt(0) == '(' || word.charAt(0) == ')' ))) {
-                        break;
-                    }
-                    if (word.charAt(word.length-1) == ',') {
-                        word = word.substring(0, word.length-1);
-                    }
-                    // [ ,_-\u05d4\u05d1\u05dc\u05de] = ה ב ל מ 
-                    // newKey = newKey.concat(`[ ,_-\u05d4\u05d1\u05dc\u05de]*${word}`);
-                    newKey = `${newKey}[ ,_-\u05d4\u05d1\u05dc\u05de]*${word}`;
+    var generateRegExp = function (item) {
+        let sp = item.OfficialName.split(/(?: )+/);
+        if (sp && sp[0] !== '') {    
+            let newKey = `[\u05d4\u05d1\u05dc\u05de]*${sp[0]}`;
+            for (let i = 1; i < sp.length; i++) {
+                let word = sp[i]; 
+                if (sp[i-1].charAt(sp[i-1].length-1) == ',' || (word !== `` && (word.charAt(0) == '(' || word.charAt(0) == ')' ))) {
+                    break;
                 }
-
-                let keyRegex = new RegExp(newKey, "gu");
-
-                let kv = {
-                    key: keyRegex,
-                    value: item.KnessetUrl
-                };
-                arr.push(kv);
-                // want to push some {key, value} and not just one
+                if (word.charAt(word.length-1) == ',') {
+                    word = word.substring(0, word.length-1);
+                }
+                newKey = `${newKey}[ ,_-\u05d4\u05d1\u05dc\u05de]*${word}`; // [ ,_-\u05d4\u05d1\u05dc\u05de] = ה ב ל מ 
             }
-        });
+            let keyRegex = new RegExp(newKey, "gu");
 
+            let kv = {
+                key: keyRegex,
+                value: item.KnessetUrl
+            };
+            regexAndLinks.push(kv);
+        }
+    };
 
+    var findAndLink = function (keyval) { // keyval = one element of the dictionary of {key: regExp, value: url link}
         var elems = document.querySelectorAll('body');
 
-        // var arri = [
-        //     { key: 'תוכן ומבנה הספר', value: 'https://www.google.com' },
-        //     { key: 'עונשים גם בחוקים אחרים', value: 'https://www.ynet.co.il' },
-        //     { key: 'מצוות הקרבנות', value: 'https://stackoverflow.com/' },
-        //     { key: 'חוקי מדינת ישראל', value: 'https://main.knesset.gov.il/Activity/Legislation/Laws/Pages/LawReshumot.aspx?t=LawReshumot&st=LawReshumot' }
-        // ];
+        for (var i = 0; i < elems.length; i++) {  // call to findAndReplaceDOMText for each element in the dom
+            // findAndReplaceDOMText is an imported function
+            findAndReplaceDOMText(elems[i], {   // elem[i] = one elemnt of the page html
+                preset: 'prose',
+                find: keyval.key,
+                replace: function (portion, match) {
+                    var matched_ref = match[0]
+                        .replace(/[\r\n\t ]+/g, " ") // Filter out multiple spaces
+                        .replace(/[(){}[\]]+/g, ""); // Filter out internal parenthesis 
+                    ns.matches.push(matched_ref);
+                    var node = document.createElement("a"); // create an a tag for link
+                    node.target = "_blank";
+                    node.className = "talia-ref";
+                    node.href = keyval.value; // the href is the apropriate url link
+                    node.setAttribute('data-ref', matched_ref);
+                    node.textContent = portion.text;
 
-        for (var a = 0; a < arr.length; a++) {
-            let keyval = arr[a];  // keyval = one element of the dictionary of {key: regExp, value: url link}
-
-            for (var i = 0; i < elems.length; i++) {
-                findAndReplaceDOMText(elems[i], {   // elem[i] = one elemnt of the page html
-                    preset: 'prose',
-                    find: keyval.key,
-                    replace: function (portion, match) {
-                        var matched_ref = match[0]
-                            .replace(/[\r\n\t ]+/g, " ") // Filter out multiple spaces
-                            .replace(/[(){}[\]]+/g, ""); // Filter out internal parenthesis 
-                        ns.matches.push(matched_ref);
-                        var node = document.createElement("a"); // create an a tag for link
-                        node.target = "_blank";
-                        node.className = "talia-ref";
-                        node.href = keyval.value; // the href is the apropriate url link
-                        node.setAttribute('data-ref', matched_ref);
-                        node.textContent = portion.text;
-
-                        return node;
-                    },
-                    filterElements: function (el) {
-                        return !(
-                            hasOwn.call(findAndReplaceDOMText.NON_PROSE_ELEMENTS, el.nodeName.toLowerCase())
-                            || (el.tagName == "A")
-                        );
-                    }
-                });
-            }
+                    return node;
+                },
+                filterElements: function (el) {
+                    return !(
+                        hasOwn.call(findAndReplaceDOMText.NON_PROSE_ELEMENTS, el.nodeName.toLowerCase())
+                        || (el.tagName == "A")
+                    );
+                }
+            });
         }
-    }
+    };
 
-    function isLetter(str) {
-        return str.length === 1 && str.match(/[a-z]/i);
-    }
+    var replaceAllNames = function () {
 
-    // חוק התגמולים לנפגעי פעולות איבה
-    // 1. חוק התגמולים
-    // 2. חוק התגמולים לנפגעי
-    // 3. חוק התגמולים לנפגעי פעולות
-    // 4. חוק התגמולים לנפגעי פעולות איבה
-    // 5. חוק תגמולים 
-    // 6. חוק התגמולים לנפגעי פעולות האיבה
+        //create a array of {key: regExp, value: url link} of the laws in the uri map
+        uriMap.forEach(function (item) {
+            generateRegExp(item);
+        });
 
-    // u05d4  זה ה
+        for (var a = 0; a < regexAndLinks.length; a++) {
+            findAndLink(regexAndLinks[a]); 
+        }
+    };
+
+    replaceAllNames();
 
 }({}));

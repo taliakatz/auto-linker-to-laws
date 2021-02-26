@@ -11,6 +11,9 @@
             "js": [
                 "jquery.js",
                 "findAndReplace.js"
+            ],
+            "css": [
+                "theme.css"
             ]
         }
     ]
