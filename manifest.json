@@ -1,0 +1,17 @@
+{
+    "name": "Inject DOM",
+    "description": "desc bbla",
+    "version": "1",
+    "manifest_version": 2,
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "jquery.js",
+                "findAndReplace.js"
+            ]
+        }
+    ]
+}
