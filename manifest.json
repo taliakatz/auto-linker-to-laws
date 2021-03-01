@@ -1,7 +1,7 @@
 {
-    "name": "Inject DOM",
-    "description": "desc bbla",
-    "version": "1",
+    "name": "Israeli laws auto-linker",
+    "description": "Automatically links israeli laws references to the Knesset website",
+    "version": "1.0",
     "manifest_version": 2,
     "content_scripts": [
         {
@@ -16,5 +16,13 @@
                 "theme.css"
             ]
         }
-    ]
+    ],
+    "page_action": {
+        "default_icon": {
+          "1": "laws_icon.png"
+        }
+      },
+      "icons": {
+        "1": "laws_icon.png"
+      }
 }

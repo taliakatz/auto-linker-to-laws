@@ -1,4 +1,4 @@
-.popup-uri {
+.popup {
     position: relative;
     display: inline-block;
     cursor: pointer;
@@ -8,8 +8,8 @@
     user-select: none;
   }
   
-  /* The actual uriPopup */
-  .popup-uri .popuptext {
+  /* The actual popup */
+  .popup .popuptext {
     visibility: hidden;
     width: 160px;
     background-color: #555;
@@ -24,8 +24,8 @@
     margin-left: -80px;
   }
   
-  /* uriPopup arrow */
-  .popup-uri .popuptext::after {
+  /* Popup arrow */
+  .popup .popuptext::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -37,8 +37,45 @@
   }
   
   /* Toggle this class - hide and show the popup */
-  .popup-uri .show {
+  .popup .show {
     visibility: visible;
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
   }
+
+  .popup .hide {
+    visibility: hidden;
+    -webkit-animation: fadeOut 1s;
+    animation: fadeOut 1s;
+  }
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
+
+  @-webkit-keyframes fadeOut {
+    from {opacity: 1;} 
+    to {opacity: 0;}
+  }
+  
+  @keyframes fadeOut {
+    from {opacity: 2;}
+    to {opacity:0 ;}
+  }
+
+  #talia {
+      background-color: aqua;
+  }
+  #talia .show{
+    background-color:crimson;
+    }
+    #talia .hide{
+        background-color:darkgreen;
+        }
+      

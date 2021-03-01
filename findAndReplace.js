@@ -5781,11 +5781,12 @@
     ns.sources = {};
 
     var regexAndLinks = [];
+    // var globalCounter = 1;
 
     var generateRegExp = function (item) {
         let sp = item.OfficialName.split(/(?: )+/);
         if (sp && sp[0] !== '') {    
-            let newKey = `[\u05d4\u05d1\u05dc\u05de]*${sp[0]}`;
+            let newKey = `[\u05d4\u05d1\u05dc\u05de]*${createRegexHebrewWord(sp[0])}`;
             for (let i = 1; i < sp.length; i++) {
                 let word = sp[i]; 
                 if (sp[i-1].charAt(sp[i-1].length-1) == ',' || (word !== `` && (word.charAt(0) == '(' || word.charAt(0) == ')' ))) {
@@ -5794,7 +5795,10 @@
                 if (word.charAt(word.length-1) == ',') {
                     word = word.substring(0, word.length-1);
                 }
-                newKey = `${newKey}[ ,_-\u05d4\u05d1\u05dc\u05de]*${word}`; // [ ,_-\u05d4\u05d1\u05dc\u05de] = ה ב ל מ 
+                if (word.charAt(0) == '\u05d4') {
+                    word = word.substring(1, word.length);
+                }
+                newKey = `${newKey}[ ,_-\u05d4\u05d1\u05dc\u05de]*${createRegexHebrewWord(word)}`; // [ ,_-\u05d4\u05d1\u05dc\u05de] = ה ב ל מ 
             }
             let keyRegex = new RegExp(newKey, "gu");
 
@@ -5804,6 +5808,44 @@
             };
             regexAndLinks.push(kv);
         }
+    };
+
+    //returns a string that represent a regExp of one word
+    var createRegexHebrewWord = function (word) {
+        word = word.replace(/[(){}[\],]+/g, "");
+        let len = word.length;
+        let j = 0;
+        while (j < len) {
+            let ch = word.charAt(j);
+            let before = word.substring(0, j);
+            let after = word.substring(j+1, word.length);
+            switch (ch) {   
+                case '\u05d5':  //case of ו
+                    if (j !== 0 && j !== len-1) {
+                        word = `${before}[\u05d5]?${after}`;
+                        len = word.length;
+                        j+=4;
+                    }
+                    else j++;
+                    break;
+                
+                case '\u05d9':  //case of י
+                    if (after.charAt(0) == '\u05d9') {
+                        after = after.substring(1, after.length);
+                    }
+                    word = `${before}[\u05d9]*${after}`;
+                    len = word.length;
+                    j+=4;
+                    break;
+                    
+                // case '\u05d4':  //case of ה
+
+                default:
+                    j++;
+                    break;
+            }  
+        }
+        return word;
     };
 
     var findAndLink = function (keyval) { // keyval = one element of the dictionary of {key: regExp, value: url link}
@@ -5826,8 +5868,17 @@
                     node.setAttribute('data-ref', matched_ref);
                     node.textContent = portion.text;
 
+                    // var popupnode = document.createElement("span");
+                    // popupnode.className = "popup-uri";
+                    // popupnode.id = `popup-uri-${globalCounter}`;
+                    // popupnode.onmouseenter = "showPopupUri(this)";
+                    // popupnode.onmouseleave = "hidePopupUri(this)";
+                    // node.appendChild(popupnode);
+                    // globalCounter++;
                     return node;
                 },
+                wrap: 'span',
+                wrapClass: 'uriPopup',
                 filterElements: function (el) {
                     return !(
                         hasOwn.call(findAndReplaceDOMText.NON_PROSE_ELEMENTS, el.nodeName.toLowerCase())
@@ -5849,6 +5900,14 @@
             findAndLink(regexAndLinks[a]); 
         }
     };
+
+    // var showPopupUri = function (node) {
+    //     node.classList.toggle("show");
+    // };
+
+    // var hidePopupUri = function (node) {
+    //     node.classList.toggle("hide");
+    // };
 
     replaceAllNames();
 
