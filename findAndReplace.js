@@ -5775,7 +5775,139 @@
 
     var options = {};
     var mode = options.mode || "popup-hover"; // "link", "popup-hover", "popup-click"
+    var popupStyles = options.popupStyles || {};
     if (window.screen.width < 820) { mode = "link"; }  // If the screen is small, fallback to link mode
+
+    var popUpElem;
+    var heBox;
+    var enBox;
+    var heNotice;
+    var heTitle;
+    var enTitle;
+    var heElems;
+    var enElems;
+
+
+    var setupPopup = function (styles, mode) {
+        popUpElem = document.createElement("div");
+        popUpElem.id = "sefaria-popup";
+
+        var html = "";
+        // Set default content for the popup
+        html += '<style scoped>' +
+            '#sefaria-popup {' +
+            'max-width: 400px;' +
+            'font-size: 16px;' +
+            'border: 1px black solid;' +
+            'background-color: #fff3da;' +
+            'color: #222222;' +
+            'padding: 10px 20px 5px 20px;' +
+            '}' +
+            '.sefaria-text {' +
+            'padding-top: 10px;' +
+            '}' +
+            '#sefaria-title {' +
+            'font-weight: bold;' +
+            'text-align: center;' +
+            'text-decoration: underline;' +
+            '}';
+
+        if (mode == "popup-click") {
+            html += '#sefaria-close {' +
+                '    font-family: Helvetica,Arial,sans-serif;' +
+                '    font-size: 14px;' +
+                '    font-weight: 700;' +
+                '    line-height: 12px;' +
+                '    position: absolute;' +
+                '    top: 5px;' +
+                '    right: 5px;' +
+                '    padding: 5px 5px 3px;' +
+                '    cursor: pointer;' +
+                '    color: #fff;' +
+                '    border: 0;' +
+                '    outline: none;' +
+                '    background: #c74c3c;' +
+                '}' +
+                '</style>' +
+                '<div id="sefaria-close">X</div>';
+        } else {
+            html += '</style>'
+        }
+
+        html += '<div id="sefaria-title"><div class="he" dir="rtl"></div><div class="en"></div></div>' +
+            '<div class="sefaria-text he" dir="rtl"></div>' +
+            '<div class="sefaria-text en"></div>' +
+            '<div class = "sefaria-notice" style="font-size: 10px; margin-top: 10px;">';
+
+
+        html += '<div class="en">English for test Yuval</div>' +
+            '<div class="he" dir="rtl">תוכן תוכן תוכן יובל בדיקה</div>';
+
+
+        html += '</div>';
+
+        popUpElem.innerHTML = html;
+        // Apply any override styles
+        if (styles) {
+            for (var n in styles) {
+                if (styles.hasOwnProperty(n)) {
+                    popUpElem.style[n] = styles[n];
+                }
+            }
+        }
+
+        // Apply function-critical styles
+        popUpElem.style.position = "fixed";
+        popUpElem.style.overflow = "hidden";
+        popUpElem.style.display = "none";
+        popUpElem.style.zIndex = 1000;
+
+        popUpElem = document.body.appendChild(popUpElem);
+
+        //heBox = popUpElem.querySelector(".sefaria-text.he");
+        heBox = {};
+        //enBox = popUpElem.querySelector(".sefaria-text.en");
+        enBox = {};
+        //heTitle = popUpElem.querySelector("#sefaria-title .he");
+        heTitle = 'כותרת';
+        //enTitle = popUpElem.querySelector("#sefaria-title .en");
+        enTitle = 'headerfff';
+        //heNotice = popUpElem.querySelector(".sefaria-notice .he");
+        heNotice = 'notice 123';
+        heElems = popUpElem.querySelectorAll(".he");
+        enElems = popUpElem.querySelectorAll(".en");
+    };
+    setupPopup(popupStyles, mode);
+
+    var showPopup = function (e, mode) {
+
+        //var source = { en: 'english here bla bl blah', he: 'עברית עברית' };
+        enBox.innerHTML = '1';
+        heBox.innerHTML = '2';
+        enTitle.textContent = '3';
+        heTitle.textContent = '4';
+
+        var rect = e.getBoundingClientRect();
+        popUpElem.style.top = (rect.top > 100) ? rect.top - 50 + "px" : rect.top + 30 + "px";
+        if (rect.left < window.innerWidth / 2) {
+            popUpElem.style.left = rect.right + 10 + "px";
+            popUpElem.style.right = "auto";
+        } else {
+            popUpElem.style.left = "auto";
+            popUpElem.style.right = window.innerWidth - rect.left + "px";
+        }
+
+        popUpElem.style.display = "block";
+
+        var popUpRect = popUpElem.getBoundingClientRect();
+        if (window.innerHeight < popUpRect.bottom) { // popup drops off the screen
+            var pos = ((window.innerHeight - popUpRect.height) - 10);
+            popUpElem.style.top = (pos > 0) ? pos + "px" : "10px";
+        }
+    };
+    var hidePopup = function () {
+        popUpElem.style.display = "none";
+    };
 
     ns.matches = [];
     ns.sources = {};
@@ -5785,15 +5917,15 @@
 
     var generateRegExp = function (item) {
         let sp = item.OfficialName.split(/(?: )+/);
-        if (sp && sp[0] !== '') {    
+        if (sp && sp[0] !== '') {
             let newKey = `[\u05d4\u05d1\u05dc\u05de]*${createRegexHebrewWord(sp[0])}`;
             for (let i = 1; i < sp.length; i++) {
-                let word = sp[i]; 
-                if (sp[i-1].charAt(sp[i-1].length-1) == ',' || (word !== `` && (word.charAt(0) == '(' || word.charAt(0) == ')' ))) {
+                let word = sp[i];
+                if (sp[i - 1].charAt(sp[i - 1].length - 1) == ',' || (word !== `` && (word.charAt(0) == '(' || word.charAt(0) == ')'))) {
                     break;
                 }
-                if (word.charAt(word.length-1) == ',') {
-                    word = word.substring(0, word.length-1);
+                if (word.charAt(word.length - 1) == ',') {
+                    word = word.substring(0, word.length - 1);
                 }
                 if (word.charAt(0) == '\u05d4') {
                     word = word.substring(1, word.length);
@@ -5818,32 +5950,32 @@
         while (j < len) {
             let ch = word.charAt(j);
             let before = word.substring(0, j);
-            let after = word.substring(j+1, word.length);
-            switch (ch) {   
+            let after = word.substring(j + 1, word.length);
+            switch (ch) {
                 case '\u05d5':  //case of ו
-                    if (j !== 0 && j !== len-1) {
+                    if (j !== 0 && j !== len - 1) {
                         word = `${before}[\u05d5]?${after}`;
                         len = word.length;
-                        j+=4;
+                        j += 4;
                     }
                     else j++;
                     break;
-                
+
                 case '\u05d9':  //case of י
                     if (after.charAt(0) == '\u05d9') {
                         after = after.substring(1, after.length);
                     }
                     word = `${before}[\u05d9]*${after}`;
                     len = word.length;
-                    j+=4;
+                    j += 4;
                     break;
-                    
+
                 // case '\u05d4':  //case of ה
 
                 default:
                     j++;
                     break;
-            }  
+            }
         }
         return word;
     };
@@ -5886,6 +6018,19 @@
                     );
                 }
             });
+
+            //////
+            //ns.sources = [];
+
+            // Bind a click event and a mouseover event to each link
+            [].forEach.call(document.querySelectorAll('.talia-ref'), function (e) {
+                e.addEventListener('mouseover', function (event) {
+                    showPopup(this, mode);
+                }, false);
+                e.addEventListener('mouseout', hidePopup, false);
+            });
+            //////
+
         }
     };
 
@@ -5897,7 +6042,7 @@
         });
 
         for (var a = 0; a < regexAndLinks.length; a++) {
-            findAndLink(regexAndLinks[a]); 
+            findAndLink(regexAndLinks[a]);
         }
     };
 
