@@ -19,10 +19,10 @@
     ],
     "page_action": {
         "default_icon": {
-          "1": "laws_icon.png"
+          "1": "icons/laws_icon.png"
         }
       },
       "icons": {
-        "1": "laws_icon.png"
+        "1": "icons/laws_icon.png"
       }
 }

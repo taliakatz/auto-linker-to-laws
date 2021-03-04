@@ -3308,8 +3308,8 @@
             "Type": "Primary",
             "LawSource": "OData",
             "LawSubSource": "KNS_Bill",
-            "OfficialName": "תקציב המדינה לשנת הכספים 2004",
-            "NormalizeName": "תקציב_המדינה_לשנת_הכספים_2004",
+            "OfficialName": "חוק התקציב לשנת הכספים 2004",
+            "NormalizeName": "חוק_התקציב_לשנת_הכספים_2004",
             "KnessetUrl": "https://main.knesset.gov.il/Activity/Legislation/Laws/Pages/LawBill.aspx?t=LawReshumot&lawitemid=75119",
             "RecentOfficialNames": [],
             "PublicationDate": "2004-02-03",
@@ -5106,8 +5106,8 @@
             "Type": "Primary",
             "LawSource": "OData",
             "LawSubSource": "KNS_Bill",
-            "OfficialName": "תקציב המדינה לשנת הכספים 2005",
-            "NormalizeName": "תקציב_המדינה_לשנת_הכספים_2005",
+            "OfficialName": "חוק התקציב לשנת הכספים 2005",
+            "NormalizeName": "חוק_התקציב_לשנת_הכספים_2005",
             "KnessetUrl": "https://main.knesset.gov.il/Activity/Legislation/Laws/Pages/LawBill.aspx?t=LawReshumot&lawitemid=78216",
             "RecentOfficialNames": [],
             "PublicationDate": "2005-06-29",
@@ -5780,15 +5780,8 @@
 
     var popUpElem;
     var heBox;
-    var enBox;
-    var heNotice;
-    var heTitle;
-    var enTitle;
-    var heElems;
-    var enElems;
 
-
-    var setupPopup = function (styles, mode) {
+    var setupPopup = function () {
         popUpElem = document.createElement("div");
         popUpElem.id = "sefaria-popup";
 
@@ -5796,65 +5789,48 @@
         // Set default content for the popup
         html += '<style scoped>' +
             '#sefaria-popup {' +
-            'max-width: 400px;' +
-            'font-size: 16px;' +
-            'border: 1px black solid;' +
-            'background-color: #fff3da;' +
-            'color: #222222;' +
-            'padding: 10px 20px 5px 20px;' +
-            '}' +
+                'max-width: 400px;' +
+                'font-size: 13px;' +
+                'border: 1px #aaaaaa solid;' +
+                'border-radius: 6px;' +
+                'background-color: #f8f9f9 ;' +
+                'color: #222222;' +
+                'padding: 5px 10px 5px 10px;' +
+                '-webkit-box-shadow: 0px 0px 5px 0px rgba(164, 164, 164, 1);' +
+                '}' +
             '.sefaria-text {' +
-            'padding-top: 10px;' +
+                'padding-top: 10px;' +
             '}' +
             '#sefaria-title {' +
-            'font-weight: bold;' +
-            'text-align: center;' +
-            'text-decoration: underline;' +
-            '}';
+                'font-weight: bold;' +
+                'text-align: center;' +
+                'text-decoration: underline;' +
+            '}' +
+            '</style>';
+        
 
-        if (mode == "popup-click") {
-            html += '#sefaria-close {' +
-                '    font-family: Helvetica,Arial,sans-serif;' +
-                '    font-size: 14px;' +
-                '    font-weight: 700;' +
-                '    line-height: 12px;' +
-                '    position: absolute;' +
-                '    top: 5px;' +
-                '    right: 5px;' +
-                '    padding: 5px 5px 3px;' +
-                '    cursor: pointer;' +
-                '    color: #fff;' +
-                '    border: 0;' +
-                '    outline: none;' +
-                '    background: #c74c3c;' +
-                '}' +
-                '</style>' +
-                '<div id="sefaria-close">X</div>';
-        } else {
-            html += '</style>'
-        }
-
-        html += '<div id="sefaria-title"><div class="he" dir="rtl"></div><div class="en"></div></div>' +
+        html += '<div id="sefaria-title"><div class="he" dir="rtl"></div>' +
             '<div class="sefaria-text he" dir="rtl"></div>' +
-            '<div class="sefaria-text en"></div>' +
             '<div class = "sefaria-notice" style="font-size: 10px; margin-top: 10px;">';
 
 
-        html += '<div class="en">English for test Yuval</div>' +
-            '<div class="he" dir="rtl">תוכן תוכן תוכן יובל בדיקה</div>';
+        // html += '<div class="en">English for test Yuval</div>' +
+        //     '<div class="he" dir="rtl">תוכן תוכן תוכן יובל בדיקה</div>';
 
+        html += '<div class="he" dir="rtl"></div>';
 
         html += '</div>';
 
         popUpElem.innerHTML = html;
+
         // Apply any override styles
-        if (styles) {
-            for (var n in styles) {
-                if (styles.hasOwnProperty(n)) {
-                    popUpElem.style[n] = styles[n];
-                }
-            }
-        }
+        // if (styles) {
+        //     for (var n in styles) {
+        //         if (styles.hasOwnProperty(n)) {
+        //             popUpElem.style[n] = styles[n];
+        //         }
+        //     }
+        // }
 
         // Apply function-critical styles
         popUpElem.style.position = "fixed";
@@ -5864,28 +5840,14 @@
 
         popUpElem = document.body.appendChild(popUpElem);
 
-        //heBox = popUpElem.querySelector(".sefaria-text.he");
-        heBox = {};
-        //enBox = popUpElem.querySelector(".sefaria-text.en");
-        enBox = {};
-        //heTitle = popUpElem.querySelector("#sefaria-title .he");
-        heTitle = 'כותרת';
-        //enTitle = popUpElem.querySelector("#sefaria-title .en");
-        enTitle = 'headerfff';
-        //heNotice = popUpElem.querySelector(".sefaria-notice .he");
-        heNotice = 'notice 123';
-        heElems = popUpElem.querySelectorAll(".he");
-        enElems = popUpElem.querySelectorAll(".en");
+        heBox = popUpElem.querySelector(".sefaria-text.he");
     };
-    setupPopup(popupStyles, mode);
 
-    var showPopup = function (e, mode) {
+    setupPopup();
 
-        //var source = { en: 'english here bla bl blah', he: 'עברית עברית' };
-        enBox.innerHTML = '1';
-        heBox.innerHTML = '2';
-        enTitle.textContent = '3';
-        heTitle.textContent = '4';
+    var showPopup = function (e) {
+        
+        heBox.innerHTML = e.getAttribute('uri-ref');
 
         var rect = e.getBoundingClientRect();
         popUpElem.style.top = (rect.top > 100) ? rect.top - 50 + "px" : rect.top + 30 + "px";
@@ -5897,6 +5859,7 @@
             popUpElem.style.right = window.innerWidth - rect.left + "px";
         }
 
+        popUpElem.classList.toggle("show");
         popUpElem.style.display = "block";
 
         var popUpRect = popUpElem.getBoundingClientRect();
@@ -5905,15 +5868,18 @@
             popUpElem.style.top = (pos > 0) ? pos + "px" : "10px";
         }
     };
+
+    ////
     var hidePopup = function () {
         popUpElem.style.display = "none";
     };
+    ////
+
 
     ns.matches = [];
     ns.sources = {};
 
     var regexAndLinks = [];
-    // var globalCounter = 1;
 
     var generateRegExp = function (item) {
         let sp = item.OfficialName.split(/(?: )+/);
@@ -5936,7 +5902,8 @@
 
             let kv = {
                 key: keyRegex,
-                value: item.KnessetUrl
+                url: item.KnessetUrl,
+                uri: item.Uri
             };
             regexAndLinks.push(kv);
         }
@@ -5952,7 +5919,7 @@
             let before = word.substring(0, j);
             let after = word.substring(j + 1, word.length);
             switch (ch) {
-                case '\u05d5':  //case of ו
+                case '\u05d5':  // ו
                     if (j !== 0 && j !== len - 1) {
                         word = `${before}[\u05d5]?${after}`;
                         len = word.length;
@@ -5961,7 +5928,7 @@
                     else j++;
                     break;
 
-                case '\u05d9':  //case of י
+                case '\u05d9':  // י
                     if (after.charAt(0) == '\u05d9') {
                         after = after.substring(1, after.length);
                     }
@@ -5970,7 +5937,7 @@
                     j += 4;
                     break;
 
-                // case '\u05d4':  //case of ה
+                // case '\u05d4':  // ה
 
                 default:
                     j++;
@@ -5980,7 +5947,7 @@
         return word;
     };
 
-    var findAndLink = function (keyval) { // keyval = one element of the dictionary of {key: regExp, value: url link}
+    var findAndLink = function (keyval) { // keyval = one element of the dictionary of {key: regExp, url: url link, uri: uri path}
         var elems = document.querySelectorAll('body');
 
         for (var i = 0; i < elems.length; i++) {  // call to findAndReplaceDOMText for each element in the dom
@@ -5996,21 +5963,12 @@
                     var node = document.createElement("a"); // create an a tag for link
                     node.target = "_blank";
                     node.className = "talia-ref";
-                    node.href = keyval.value; // the href is the apropriate url link
+                    node.href = keyval.url; // the href is the apropriate url link
                     node.setAttribute('data-ref', matched_ref);
                     node.textContent = portion.text;
-
-                    // var popupnode = document.createElement("span");
-                    // popupnode.className = "popup-uri";
-                    // popupnode.id = `popup-uri-${globalCounter}`;
-                    // popupnode.onmouseenter = "showPopupUri(this)";
-                    // popupnode.onmouseleave = "hidePopupUri(this)";
-                    // node.appendChild(popupnode);
-                    // globalCounter++;
+                    node.setAttribute('uri-ref', keyval.uri);
                     return node;
                 },
-                wrap: 'span',
-                wrapClass: 'uriPopup',
                 filterElements: function (el) {
                     return !(
                         hasOwn.call(findAndReplaceDOMText.NON_PROSE_ELEMENTS, el.nodeName.toLowerCase())
@@ -6019,40 +5977,26 @@
                 }
             });
 
-            //////
-            //ns.sources = [];
-
-            // Bind a click event and a mouseover event to each link
+            // Bind a mouseover event to each link
             [].forEach.call(document.querySelectorAll('.talia-ref'), function (e) {
                 e.addEventListener('mouseover', function (event) {
-                    showPopup(this, mode);
+                    showPopup(this);
                 }, false);
                 e.addEventListener('mouseout', hidePopup, false);
             });
-            //////
-
         }
     };
 
     var replaceAllNames = function () {
-
-        //create a array of {key: regExp, value: url link} of the laws in the uri map
+        //create arr of {key: regExp, url: url link, uri: uri path} for each law in urimap
         uriMap.forEach(function (item) {
             generateRegExp(item);
         });
-
+        //search over the page for matches
         for (var a = 0; a < regexAndLinks.length; a++) {
             findAndLink(regexAndLinks[a]);
         }
     };
-
-    // var showPopupUri = function (node) {
-    //     node.classList.toggle("show");
-    // };
-
-    // var hidePopupUri = function (node) {
-    //     node.classList.toggle("hide");
-    // };
 
     replaceAllNames();
 
