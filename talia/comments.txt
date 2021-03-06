@@ -70,3 +70,10 @@ which are in some 'editing distance' from the original name of the law.
  those references in a html 'a' tag
 with a link to an official source. The official source I chose is the Isreali Knesset site. In this site the user can read the original version of the full law, with all it's details.
 The way I searched for the
+
+
+
+מארז:
+לעשות מאתר ששלח גדלים כאלה של תמונות
+לפתוח משתמש באקסטנשינס של כרום
+how to publish my chrome extenssions
