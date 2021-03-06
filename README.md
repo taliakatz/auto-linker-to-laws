@@ -14,5 +14,5 @@ or to the Wikisource of that law.
 
 ### Additionals features
 
-There exist a target to unite the global law's URLs into one form in the network. For each match that the linker finds, it also binds a popup which present the future uri 
-of the specific law. This features isn't useful for the user yet, but it was added to the linker in purpose to get this reorganization idea into the public knowledge.
+There exists a target to unite the global law's URLs into one form in the network. For each match that the linker finds, it also binds a popup which present the future uri 
+of the specific law. This feature isn't useful for the user yet, but it was added to the linker in purpose to get this reorganization idea into the public knowledge.
