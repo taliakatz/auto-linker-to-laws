@@ -14,7 +14,8 @@
             "js": [
                 "jquery.js",
                 "main.js"
-            ]
+            ],
+            "build": "browserify main.js -o bundle.js"
         }
     ],
     "icons": {
