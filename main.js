@@ -5759,6 +5759,7 @@
     if (!supports) {
         return
     };
+    // document.write('<script type="text/javascript" src="test.js" ></script>');
 
     //   main.load = function (context, moduleName, url) {
     //     var xhr = new XMLHttpRequest();
@@ -5783,10 +5784,8 @@
     /* Adapted from: https://plainjs.com/javascript/manipulation/unwrap-a-dom-element-35/ */
     function unwrap(el) { var parent = el.parentNode; while (el.firstChild) parent.insertBefore(el.firstChild, el); parent.removeChild(el); }
 
-
     var options = {};
     var mode = options.mode || "popup-hover"; // "link", "popup-hover", "popup-click"
-    var popupStyles = options.popupStyles || {};
     if (window.screen.width < 820) { mode = "link"; }  // If the screen is small, fallback to link mode
 
     var popUpElem;
@@ -5901,15 +5900,14 @@
     };
 
     var generateRegExp = function (item) {
-        // let sp;
-        // if (item.OpenLawBook == "") {
-        //     sp = item.OfficialName.split(/(?: )+/);
-        // }
-        // else {
-        //     sp = item.OpenLawBook.OpenLawBookInLawHeader.split(/(?: )+/);
-        // }
+        let sp;
+        if (item.OpenLawBook == "") {
+            sp = item.OfficialName.split(/(?: )+/);
+        }
+        else {
+            sp = item.OpenLawBook.OpenLawBookInLawHeader.split(/(?: )+/);
+        }
         
-        let sp = item.OfficialName.split(/(?: )+/);
         if (sp && sp[0] !== '') {
             let newKey = `[\u05d4\u05d1\u05dc\u05de]*${createRegexHebrewWord(sp[0])}`;
             for (let i = 1; i < sp.length; i++) {
@@ -5927,11 +5925,10 @@
             }
             let keyRegex = new RegExp(newKey, "gu");
 
-            let finalUrl = chooseUrl(item);
+            let itemUrl = chooseUrl(item);
             let kv = {
                 key: keyRegex,
-                //url: finalUrl,
-                url: item.KnessetUrl,
+                url: itemUrl,
                 uri: item.Uri
             };
             regexAndLinks.push(kv);
