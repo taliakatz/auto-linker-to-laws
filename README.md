@@ -6,7 +6,7 @@ You can find a PDF in the repository which explain more about the linker and the
 
 ### Getting Started
 
-The linker is available as a chrome extension, you can download it on that link:   and use it automaticly on every page which you route to.
+The linker is available as a chrome extension, you can download it on:(complete)   and use it automaticly on every page which you route to.
 
 For example, search "חוק העונשין", which is a name of one of the Israeli laws.
 You will see a link that wraps each reference of this law in every page which include it. With a click on that link you will probably be navigated to the Israeli Knesset site
