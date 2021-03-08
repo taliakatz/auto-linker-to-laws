@@ -5906,8 +5906,9 @@
         //     sp = item.OfficialName.split(/(?: )+/);
         // }
         // else {
-        //     sp = item.OpenLawBook.OpenLawBookName.split(/(?: )+/);
+        //     sp = item.OpenLawBook.OpenLawBookInLawHeader.split(/(?: )+/);
         // }
+        
         let sp = item.OfficialName.split(/(?: )+/);
         if (sp && sp[0] !== '') {
             let newKey = `[\u05d4\u05d1\u05dc\u05de]*${createRegexHebrewWord(sp[0])}`;
