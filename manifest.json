@@ -10,7 +10,7 @@
             ],
             "js": [
                 "jquery.js",
-                "findAndReplace.js"
+                "main.js"
             ]
         }
     ],
