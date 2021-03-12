@@ -1,0 +1,26 @@
+{
+  "name": "final",
+  "version": "1.0.0",
+  "description": "This linker matches between Israeli laws references in our network and their officals source.\r It uses some editing distance techniques, mostly based on regular expressions in Hebrew.\r You can find a PDF in the repository which explain more about the linker and the purposes of it's creation.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taliakatz/auto-linker-to-laws.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/taliakatz/auto-linker-to-laws/issues"
+  },
+  "homepage": "https://github.com/taliakatz/auto-linker-to-laws#readme",
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.10",
+    "babelify": "^10.0.0",
+    "tinyify": "^3.0.0"
+  }
+}
