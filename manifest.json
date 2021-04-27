@@ -3,7 +3,9 @@
     "description": "Automatically links israeli laws references to the Knesset website",
     "version": "0.0.0.1",
     "permissions": [
-        "activeTab"
+        "activeTab", 
+        "http://knesset.gov.il/Odata/*",
+        "https://main.knesset.gov.il/*"
     ],
     "manifest_version": 2,
     "content_scripts": [
@@ -12,8 +14,8 @@
                 "<all_urls>"
             ],
             "js": [
-                "jquery.js",
-                "main.js"
+                "src/jquery.js",
+                "src/main.js"
             ],
             "build": "browserify main.js -o bundle.js"
         }
